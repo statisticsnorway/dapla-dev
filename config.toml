@@ -1,5 +1,5 @@
 baseURL = "/"
-title = "Dapla Dev"
+title = "DAPLA Developer"
 
 enableRobotsTXT = true
 
@@ -53,8 +53,8 @@ anchor = "smart"
 
 [languages]
 [languages.en]
-title = "Dapla Dev"
-description = "Dapla Development Portal"
+title = "Developer Portal"
+description = "Dapla Developer Portal"
 languageName ="English"
 # Weight used for sorting.
 weight = 1
