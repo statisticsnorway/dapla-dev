@@ -1,9 +1,9 @@
 ---
-date: 2018-10-06
-title: "Easy documentation with Docsy"
-linkTitle: "Announcing Docsy"
-description: "The Docsy Hugo theme lets project maintainers and contributors focus on content, not on reinventing a website infrastructure from scratch"
-author: Riona MacNamara ([@rionam](https://twitter.com/bepsays))
+date: 2020-01-14
+title: "The Developer Portal is live"
+linkTitle: "Announcement"
+description: "The first version of the developer portal is live"
+author: Kenneth Leine Schulstad
 resources:
 - src: "**.{png,jpg}"
   title: "Image #:counter"
