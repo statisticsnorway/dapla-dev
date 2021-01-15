@@ -12,12 +12,5 @@ menu:
 Expect a lot of changes to these pages!
 {{% /pageinfo %}}
 
-```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
-```
 
 This is the landing page for the Reference docs...
