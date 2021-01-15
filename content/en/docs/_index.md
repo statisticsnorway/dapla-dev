@@ -9,8 +9,15 @@ menu:
 ---
 
 {{% pageinfo %}}
-This is a placeholder page that shows you how to use this template site.
+Expect a lot of changes to these pages!
 {{% /pageinfo %}}
 
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
 
 This is the landing page for the Reference docs...
