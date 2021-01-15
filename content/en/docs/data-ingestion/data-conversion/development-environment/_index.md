@@ -1,6 +1,6 @@
 ---
+linkTitle: "Development"
 title: "Working with Rawdata Converter Apps"
-date: 2021-01-07T15:21:51+01:00
 weight: 10
 ---
 

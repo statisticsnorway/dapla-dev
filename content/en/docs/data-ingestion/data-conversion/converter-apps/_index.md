@@ -1,5 +1,5 @@
 ---
-title: "Creating a new Converter App"
+title: "Converter Apps"
 date: 2021-01-07T15:11:03+01:00
 weight: 20
 ---
@@ -34,7 +34,7 @@ Your main task at hand should be to provide an implementation of the [RawdataCon
 
 Your generated converter app provides you with starting point for your implentation. Have a look at other rawdata converter applications for inspiration on how to write the actual *conversion code*. 
 
-Refer to the [converter app configuration reference]({{< ref "docs/data-ingestion/data-conversion/converter-app-config" >}}) section for a description of the misc application configuration parameters.
+Refer to the [converter app configuration reference]({{< ref "docs/data-ingestion/data-conversion/converter-apps" >}}) section for a description of the misc application configuration parameters.
 
 
 ## Register the converter app

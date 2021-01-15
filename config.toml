@@ -174,3 +174,5 @@ enable = false
 	icon = "fab fa-slack"
         desc = "Chat with other DAPLA developers"
 
+[params.mermaid]
+enable = true

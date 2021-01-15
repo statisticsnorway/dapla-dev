@@ -1,7 +1,7 @@
 ---
-date: 2020-01-14
-title: "The Developer Portal is live"
-linkTitle: "Announcement"
+date: 2021-01-14
+title: "The Dev Portal is coming"
+linkTitle: "First post"
 description: "The first version of the developer portal is live"
 author: Kenneth Leine Schulstad
 resources:
@@ -10,6 +10,8 @@ resources:
   params:
     byline: "Photo: Riona MacNamara / CC-BY-CA"
 ---
+
+Blah blah..
 
 **This is a typical blog post that includes images.**
 
