@@ -2,6 +2,7 @@
 ---
 title: "Docsy Example Pages"
 linkTitle: "Docsy"
+type: "docs"
 weight: 20
 ---
 
