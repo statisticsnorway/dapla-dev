@@ -1,9 +1,12 @@
-
 ---
-title: "Docsy Example Pages"
-linkTitle: "Docsy"
-type: "docs"
-weight: 20
+title: "Example Pages"
+linkTitle: "Examples"
+menu:
+  main:
+    weight: 25
+
+cascade:
+- type: "docs"
 ---
 
 {{% pageinfo %}}

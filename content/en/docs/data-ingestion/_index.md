@@ -1,6 +1,5 @@
 ---
-title: "Ingestion"
-date: 2021-01-07T13:35:33+01:00
+title: "Data Ingestion"
 draft: false
 weight: 40
 ---
