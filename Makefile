@@ -3,7 +3,7 @@ default: | help
 
 .PHONY: install
 install: ## Install local required utils
-	./bin/install.sh
+	npm install
 
 .PHONY: serve
 serve: ## Serve the site locally

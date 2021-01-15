@@ -2,39 +2,30 @@
 
 # Dapla Development Portal
 
-This is the source of the Dapla Development Portal consisting of:
+This is the source of the Dapla Development Portal.
 
-* A short highlights section explaining what Dapla is all about
-* A "getting started" section for new developers 
-* The Dapla reference documentation
- 
-The portal is built using Hugo and the [Docsy](https://github.com/google/docsy) theme
+The published pages are here: https://dapla.netlify.app/
+
+The site is built using Hugo and the [Docsy](https://github.com/google/docsy) theme. [Docsy](https://github.com/google/docsy) is a Hugo theme for technical documentation sites, providing easy site navigation, structure, and more. You can find detailed theme instructions in the Docsy user guide: https://docsy.dev/docs/
 
 
-[Docsy](https://github.com/google/docsy) is a Hugo theme for technical documentation sites, providing easy site navigation, structure, and more. This **Docsy Example Project** uses the Docsy theme, as well as providing a skeleton documentation structure for you to use. You can either copy this project and edit it with your own content, or use the theme in your projects like any other [Hugo theme](https://gohugo.io/themes/installing-and-using-themes/).
+## Running the website locally
 
-The Docsy theme is included in this project as a Git submodule:
+To build and serve the site locally:
 
-```bash
-▶ git submodule
- a053131a4ebf6a59e4e8834a42368e248d98c01d themes/docsy (heads/master)
+```
+make serve
 ```
 
-You can find detailed theme instructions in the Docsy user guide: https://docsy.dev/docs/
+Navigate to `http://localhost:1313`. You can now make changes that will immediately show up in your browser after you save.
 
+
+## Development
 
 If you want to do SCSS edits and want to publish these, you need to install `PostCSS`
 
 ```bash
 npm install
-```
-
-## Running the website locally
-
-Once you've cloned or copied the site repo, from the repo root folder, run:
-
-```
-hugo server
 ```
 
 ## Running a container locally
@@ -53,10 +44,6 @@ docker build -f dev.Dockerfile -t dapla-dev:latest .
 docker run --publish 1313:1313 --detach --mount src="$(pwd)",target=/home/dapla-dev/app,type=bind dapla-dev:latest
 ```
 
-Open your web browser and type `http://localhost:1313` in your navigation bar,
-This opens a local instance of the dapla-dev homepage. You can now make
-changes to the dapla-dev portal and those changes will immediately show up in your
-browser after you save.
 
 To stop the container, first identify the container ID with:
 
