@@ -5,13 +5,4 @@ draft: false
 weight: 45
 ---
 
-```mermaid
-graph BT
-  Core["Rawdata Converter Core"]
-  Core["Rawdata Converter Core"] --> AppCsv["Rawdata Converter App CSV"]
-  Core["Rawdata Converter Core"] --> AppSirius["Rawdata Converter App Sirius"]
-  Core["Rawdata Converter Core"] --> AppFreg["Rawdata Converter App Freg"]
-```
-
-
 Data conversion landing page
