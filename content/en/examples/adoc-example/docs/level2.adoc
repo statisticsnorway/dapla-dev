@@ -1,0 +1,26 @@
+= Nested doc
+
+Blah
+
+== Some gantt diagram
+
+[plantuml]
+----
+include::puml/gantt.puml[]
+----
+
+
+== Some java code
+
+[source,java,linenum]
+----
+Worker.newBuilder()
+        .configuration(Map.of(
+                "content.stream.connector", "rawdata",
+                "rawdata.client.provider", "memory")
+        )
+        .specification(feedBuilder)
+        .printExecutionPlan()
+        .build()
+        .run();
+----

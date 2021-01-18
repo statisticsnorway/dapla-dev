@@ -10,8 +10,8 @@ weight: 10
 
 Although not mandatory, it is recommended that you work with rawdata-converter apps via the [rawdata-converter-project](https://github.com/statisticsnorway/rawdata-converter-project). It facilitates a development environment for working with multiple standalone Rawdata Converter repos in a common context. This makes it easy to make changes and debug code across of rawdata converter components.
 
-```sh
-$ git clone git@github.com:statisticsnorway/rawdata-converter-project.git
+```shell
+git clone git@github.com:statisticsnorway/rawdata-converter-project.git
 ```
 
 Then use `make update-all` to pull down all registered rawdata-converter-apps (listed in the `repos.txt` file).

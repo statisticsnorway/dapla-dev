@@ -1,0 +1,12 @@
+---
+title: "External puml"
+---
+:doctype: book
+
+plantuml::sequence.puml[]
+
+
+
+:leveloffset: +1
+include::docs/level2.adoc[]
+:leveloffset -1

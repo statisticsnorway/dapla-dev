@@ -12,9 +12,9 @@ Make sure you have configured your [development environment]({{< ref "docs/data-
 
 From within your `rawdata-converter-project` workspace, use the [cookiecutter-rawdata-converter-app](https://github.com/statisticsnorway/cookiecutter-rawdata-converter-app) seed to quickly generate a starting base for you new rawdata-converter app. [Cookiecutter](https://cookiecutter.readthedocs.io/) is a scaffolding tool that will prompt for information and use this to generate a new project. Refer to the README for more instructions on how to install and use cookiecutter.
 
-```sh
+```shell
 $ cd $SSB_DEV/rawdata-converter-project
-$ cookiecutter gh:statisticsnorway/cookiecutter-rawdata-converter-app
+$ cookiecutter gh:statisticsnorway cookiecutter-rawdata-converter-app
 
 converter_name [SomeName]: Cheese
 project_name [rawdata-converter-app-cheese]:
@@ -25,7 +25,6 @@ package_dir [no/ssb/rawdata/converter/app]:
 rawdata_shortname [somerawdata]: cheesedata
 micronaut_version [2.1.4]:
 rawdata_converter_version [0.6.7]:
-
 ```
 
 The generated project is a fully operative Micronaut application. It provides building blocks common for most converter applications, and it relies on the common converter application infrastructure code from [rawdata-converter-coredux](https://github.com/statisticsnorway/rawdata-converter-coredux).
