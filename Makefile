@@ -5,9 +5,13 @@ default: | help
 install: ## Install local required utils
 	npm install
 
+.PHONY: serve-dev
+serve-dev: ## Serve the site locally, redering drafts and trigger re-render (dev mode)
+	hugo serve --verbose --buildDrafts --disableFastRender serve --destination public
+
 .PHONY: serve
 serve: ## Serve the site locally
-	hugo -D server
+	hugo serve --destination public
 
 .PHONY: open-local
 open-local: ## Open locally served site in your browser
