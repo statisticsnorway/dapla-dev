@@ -10,7 +10,7 @@ Make sure you have configured your [development environment]({{< ref "docs/data-
 
 ## Generate a rawdata converter app
 
-From within your `rawdata-converter-project` workspace, use the [cookiecutter-rawdata-converter-app](https://github.com/statisticsnorway/cookiecutter-rawdata-converter-app) seed to quickly generate a starting base for you new rawdata-converter app. [Cookiecutter](https://cookiecutter.readthedocs.io/) is a scaffolding tool that will prompt for information and use this to generate a new project. Refer to the README for more instructions on how to install and use cookiecutter.
+From within your `rawdata-converter-project` workspace, use the [cookiecutter-rawdata-converter-app](https://github.com/statisticsnorway/cookiecutter-rawdata-converter-app) seed to generate a starting base for you new rawdata-converter app. [Cookiecutter](https://cookiecutter.readthedocs.io/) is a scaffolding tool that will prompt for information and use this to generate a new project. Refer to the README for more instructions on how to install and use cookiecutter.
 
 ```shell
 $ cd $SSB_DEV/rawdata-converter-project
