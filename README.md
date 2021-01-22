@@ -1,6 +1,6 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/67d92d24-062b-4ef5-8fbe-1b6c09ddd465/deploy-status)](https://app.netlify.com/sites/dapla/deploys)
 
-# Dapla Development Portal
+# Dapla Developer Portal
 
 This is the source of the Dapla Development Portal.
 
