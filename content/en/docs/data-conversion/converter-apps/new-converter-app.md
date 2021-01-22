@@ -1,14 +1,14 @@
 ---
-title: "Converter Apps"
-date: 2021-01-07T15:11:03+01:00
-weight: 20
+title: "Creating a Converter App"
+linkTitle: "Creating a Converter App"
+type: swagger
+draft: false
+weight: 19´0
 ---
 
-{{% alert title="Notice" color="info" %}}
-Make sure you have configured your [development environment]({{< ref "docs/data-ingestion/data-conversion/development-environment/#configuring-your-development-environment" >}}).
-{{% /alert %}}
+The following outlines some suggested steps if you want to get started with a new Converter App. 
 
-## Generate a rawdata converter app
+## Generate a starting base
 
 From within your `rawdata-converter-project` workspace, use the [cookiecutter-rawdata-converter-app](https://github.com/statisticsnorway/cookiecutter-rawdata-converter-app) seed to generate a starting base for you new rawdata-converter app. [Cookiecutter](https://cookiecutter.readthedocs.io/) is a scaffolding tool that will prompt for information and use this to generate a new project. Refer to the README for more instructions on how to install and use cookiecutter.
 
@@ -33,7 +33,7 @@ Your main task at hand should be to provide an implementation of the [RawdataCon
 
 Your generated converter app provides you with starting point for your implentation. Have a look at other rawdata converter applications for inspiration on how to write the actual *conversion code*. 
 
-Refer to the [converter app configuration reference]({{< ref "docs/data-ingestion/data-conversion/converter-apps" >}}) section for a description of the misc application configuration parameters.
+Refer to the [converter app configuration reference]({{< ref "docs/data-conversion/converter-apps" >}}) section for a description of the misc application configuration parameters.
 
 
 ## Register the converter app
@@ -48,3 +48,6 @@ Make sure to tag your new github repo with the `dapla` and `rawdata-converter` t
 At the root of the generated rawdata converter app is a directory (`./bip`) containing guidance and scripts that can help to get the application deployed into the dapla application cluster.
 
 Files under `./bip/platform-dev` is a starting point for config connector files that can be more or less copied into the [platform-dev](https://github.com/statisticsnorway/platform-dev) repo. Of course, you will need to understand the details of all these files before continuing.
+
+
+> TODO: show and explain an example Helm Release here

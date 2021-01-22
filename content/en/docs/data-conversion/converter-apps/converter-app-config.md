@@ -1,11 +1,12 @@
 ---
 title: "Converter App Config"
+linkTitle: "Config"
 date: 2021-01-08T13:04:39+01:00
 draft: false
 weight: 30
 ---
 
-Rawdata converter apps reads config from a `application.yml` file. The following sections must be provided:
+Rawdata converter apps reads config from an `application.yml` file. The following sections must be provided:
 
 | Prefix                             | Description  
 |:---------------------------------- |:-------------
@@ -55,8 +56,8 @@ An example says more than a 1000 words:
 
             localfoo:
                 encryption:
-                key: thisisanencrytionkey
-                salt: thisisanencrytionsalt
+                key: dummyencryptionkey
+                salt: dummyencryptionsalt
                 rawdata-client:
                 provider: filesystem
                 local-temp-folder: temp
@@ -120,7 +121,7 @@ An example says more than a 1000 words:
 Rawdata converter job config properties are grouped into logical sections. 
 
 {{% alert title="Note" color="info" %}}
-Config can be expressed either as `yaml` (via `application.yml`) or `json` (e.g. when scheduling a converter job via the REST endpoints). The docs below lists the `json` variant of the names. If used in a `yaml` context, translate these properties from "camelCase" to "snake-case".
+Config can be expressed either as `yaml` (via `application.yml`) or `json` (e.g. when scheduling a converter job via the REST endpoints). The docs below use the `json` variant of the names. If used in a `yaml` context, translate these properties from "camelCase" to "snake-case".
 {{% /alert %}}
 
 ```
@@ -152,6 +153,7 @@ General converter settings
 | `maxRecordsBeforeFlush` | The max number of records to convert before writing results to parquet. | 1000000 (1 million)
 | `maxSecondsBeforeFlush` | The max number of seconds before writing results to parquet. | 300 (5 minutes)
 | `maxRecordsTotal`       | The max number of records to convert. The converter job will be stopped when reaching this count. | unlimited
+| `skippedMessages`       | Set of rawdata messages (denoted by ULID) that will explicitly be skipped from being converted. Note that using this should be considered a "hack" and thus only as "last resort" or if you can accept the accompanying technical debt. |
 
 ### `rawdata-source`
 
@@ -201,6 +203,7 @@ Runtime properties that supports the development and debugging process
 | `storeAllRawdata` | If `true`, all rawdata messages will be stored to local disk (specified by `localStoragePath`). | `false`
 | `storeAllConverted` | If `true`, all converted records will be stored as JSON to local disk (specified by `localStoragePath`).| `false`
 | `localStoragePath` | The root path of locally stored debug content. This must be specified if any of the `storeX` properties above are `true` | `false`
+| `localStoragePassword` | If specified, items will be added to a password protected archive. Can be used to add additional security to stored debug data such as failed rawdata messages. |
 
 ### `pseudo-rules`
 
@@ -232,4 +235,4 @@ Each pseudo rule is described by three properties:
     ]
 ```
 
-The above will apply the `fpe-fnr` function on all properties with a "document path" that ends with `folkeregisteridentifikator` or `foedselsEllerDNummer`. The `fpe-fnr` takes 1 argument (the pseudonymization secret named `secret1`).
+The above will apply the `fpe-fnr` function on all properties with a "document path" that ends with `folkeregisteridentifikator` or `foedselsEllerDNummer`. The `fpe-fnr` takes one argument (the pseudonymization secret named `secret1`).
