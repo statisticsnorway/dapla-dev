@@ -16,6 +16,6 @@ git clone git@github.com:statisticsnorway/rawdata-converter-project.git
 
 Then use `make update-all` to pull down all registered rawdata-converter-apps (listed in the `repos.txt` file).
 
-Later, use `make status-all` if you want to check for remote updates to any of the associated rawdata-converter repositories.
+Later use `make status-all` if you want to check for remote updates to any of the associated rawdata-converter repositories.
 
 Open the rawdata-converter-project `pom.xml` in your favorite IDE.
