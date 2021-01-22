@@ -1,9 +1,9 @@
 .PHONY: default
 default: | help
 
-.PHONY: install
-install: ## Install local required utils
-	npm install
+.PHONY: install-mac
+install-mac: ## Install local required utils
+	bin/install-mac.sh
 
 .PHONY: serve-dev
 serve-dev: ## Serve the site locally, redering drafts and trigger re-render (dev mode)

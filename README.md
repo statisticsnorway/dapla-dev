@@ -22,7 +22,11 @@ Navigate to `http://localhost:1313`. You can now make changes that will immediat
 
 ## Development
 
-If you want to do SCSS edits and want to publish these, you need to install `PostCSS`
+If you're on a Mac, you can conveniently run `make install-mac` to install neccessary tooling to get started. Or you can follow these steps:
+
+1. Install [Hugo](https://gohugo.io/getting-started/quick-start/#step-1-install-hugo).
+
+2. If you want to do SCSS edits and want to publish these, you need to install `PostCSS`
 
 ```bash
 npm install
