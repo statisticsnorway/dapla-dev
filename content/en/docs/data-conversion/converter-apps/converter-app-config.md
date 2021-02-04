@@ -6,7 +6,7 @@ draft: false
 weight: 30
 ---
 
-Rawdata converter apps reads config from an `application.yml` file. The following sections must be provided:
+Rawdata converter apps read config from an `application.yml` file. The following sections must be provided:
 
 | Prefix                             | Description  
 |:---------------------------------- |:-------------
@@ -54,21 +54,21 @@ An example says more than a 1000 words:
                 service-account.key-file: leaving-this-blank-does-not-work
                 listing.min-interval-seconds: 15
 
-            localfoo:
-                encryption:
-                key: dummyencryptionkey
-                salt: dummyencryptionsalt
-                rawdata-client:
-                provider: filesystem
-                local-temp-folder: temp
-                avro-file:
-                    max.seconds: 3600
-                    max.bytes: 10485760
-                    sync.interval: 500000
-                filesystem:
-                    storage-folder: ../localenv/rawdata/foo
-                listing:
-                    min-interval-seconds: 0
+          localfoo:
+              encryption:
+              key: dummyencryptionkey
+              salt: dummyencryptionsalt
+              rawdata-client:
+              provider: filesystem
+              local-temp-folder: temp
+              avro-file:
+                  max.seconds: 3600
+                  max.bytes: 10485760
+                  sync.interval: 500000
+              filesystem:
+                  storage-folder: ../localenv/rawdata/foo
+              listing:
+                  min-interval-seconds: 0
 
         rawdata.converter:
           job-scheduler:
@@ -121,7 +121,7 @@ An example says more than a 1000 words:
 Rawdata converter job config properties are grouped into logical sections. 
 
 {{% alert title="Note" color="info" %}}
-Config can be expressed either as `yaml` (via `application.yml`) or `json` (e.g. when scheduling a converter job via the REST endpoints). The docs below use the `json` variant of the names. If used in a `yaml` context, translate these properties from "camelCase" to "snake-case".
+Config can be expressed either as `yaml` (via `application.yml`) or `json` (e.g. when scheduling a converter job via the REST endpoints). The docs below use the `json` variant of the names. If used in a `yaml` context, translate these properties from "camelCase" to "kebab-case".
 {{% /alert %}}
 
 ```
@@ -131,6 +131,8 @@ Config can be expressed either as `yaml` (via `application.yml`) or `json` (e.g.
 ├── target-storage
 ├── target-dataset
 ├── debug
+├── pseudo-rules
+├── app-config
 ```
 
 ### `root` (no group)
@@ -236,3 +238,10 @@ Each pseudo rule is described by three properties:
 ```
 
 The above will apply the `fpe-fnr` function on all properties with a "document path" that ends with `folkeregisteridentifikator` or `foedselsEllerDNummer`. The `fpe-fnr` takes one argument (the pseudonymization secret named `secret1`).
+
+
+### app-config
+
+Implementation specific configuration for the converter app. Can be nested and grouped in many levels. Will be treated as a genric Map and deserialized by the app specific [RawdataConverterFactory](https://github.com/statisticsnorway/rawdata-converter-coredux/blob/master/src/main/java/no/ssb/rawdata/converter/core/convert/RawdataConverterFactory.java).
+
+Could hold stuff like schema names, versions, etc...

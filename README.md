@@ -2,7 +2,7 @@
 
 # Dapla Developer Portal
 
-This is the source of the Dapla Development Portal.
+This is the source of the Dapla Developer Portal.
 
 The published pages are here: https://dapla.netlify.app/
 

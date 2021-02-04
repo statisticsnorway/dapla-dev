@@ -6,6 +6,10 @@ draft: false
 weight: 19´0
 ---
 
+{{% alert title="Notice" color="info" %}}
+Make sure you have configured your [development environment]({{< ref "docs/data-conversion/development-environment/#configuring-your-development-environment" >}}).
+{{% /alert %}}
+
 The following outlines some suggested steps if you want to get started with a new Converter App. 
 
 ## Generate a starting base
