@@ -1,12 +1,12 @@
 ---
-title: "Jupyter Hub and Lab"
+title: "Jupyter"
 linkTitle: "Jupyter"
-weight: 100
+weight: 80
 description: >-
-     Page description for heading and indexes.
+     Information about how JupyterLab is hosted on JupyterHub, where the code and configuration is, and what improvements could be made
 ---
 
-## What is Jupyter? (Notebooks, JupyterLab, JupyterHub)
+## What is Jupyter?
 
 ### Notebooks and JupyterLab
 Jupyter notebook is a web browser based tool for interactive data analysis, visualization, and exploration. It supports dusins of popular languages, most notably Python and R. JupyterLab is a development environment for notebooks that like the notebooks themselves also runs in the browser. 
@@ -26,9 +26,9 @@ Jupyter code and configuration is located in this repository: https://github.com
 The Jupyter deployment configuration (HelmRelease yaml) is located here: https://github.com/statisticsnorway/platform-dev/blob/master/flux/staging-bip-app/dapla-spark/jupyter/jupyter.yaml
 This yaml specifies the JupyterHub deployment. However, this includes specifying which image should be used for the JupyterLab instance, which means that some JupyterLab settings are here too.
 
-### Improvements
+## Improvements
 
-#### Let users install and manage their own packages
+### Let users install and manage their own packages
 At SSB the JupyterLab instances are protected from direct access to the internet, to secure live data. At the moment all Python and R libraries/packages must be pre-built into the JupyterLab instances when they are served to the user. This means that...
 1. Users don't always have access to the libraries they want. This probably hampers experimentation and exploration, and might lead to sub-optimal solutions or some things not being done at all.
 2. When a user requires a library, the DAPLA team has to spend precious time on the menial work of adding a library to a Dockerfile, and figuring out dependency issues. 
@@ -41,5 +41,5 @@ These issues could be remidied by giving users access to a package repository an
 
 Users get a new instance of JupyterLab every time they open it. This means that in the case where users have access to a package manager, they should be able to write and execute an installation script for setting up the environment they need with the right packages consistently, so that they can replicate their work environment without issues. When setting up a work environment using a script you should always specify package versions, so that the environment will always be stable and replicatable. 
 
-#### Automated JupyterLab image deployment
+### Automated JupyterLab image deployment
 It would be nice to automate the deployment of new JupyterLab images to staging (when merging/committing changes to the JupyterLab Dockerfile to master). There is no built in support for this in Flux/Helm.
