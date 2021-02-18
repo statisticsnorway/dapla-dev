@@ -1,0 +1,397 @@
+openapi: 3.0.1
+paths:
+  /jobs:
+    post:
+      summary: Schedule a converter job using overrides from the specified JSON
+      description: Schedule a converter job using overrides from the specified JSON
+      operationId: scheduleJob
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request:
+                  $ref: '#/components/schemas/ConverterJobController.StartConverterJobRequest'
+        required: true
+      responses:
+        "200": {}
+  /jobs/execution-summary:
+    get:
+      summary: List all converter job execution summaries
+      description: List all converter job execution summaries
+      operationId: getJobExecutionSummary
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+  /jobs/config:
+    get:
+      summary: List effective converter job configurations for registered jobs
+      description: List effective converter job configurations for registered jobs
+      operationId: getJobConfigs
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+  /jobs/pause:
+    post:
+      summary: Pause all converter jobs
+      description: Pause all converter jobs
+      operationId: pauseAllJobs
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        "200": {}
+  /jobs/resume:
+    post:
+      summary: Resume all converter jobs
+      description: Resume all converter jobs
+      operationId: resumeAllJobs
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        "200": {}
+  /jobs/stop:
+    post:
+      summary: Stop all converter jobs
+      description: Stop all converter jobs
+      operationId: stopAllJobs
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        "200": {}
+  /jobs/{jobId}/pause:
+    post:
+      summary: Pause a specific converter job
+      description: Pause a specific converter job
+      operationId: pauseJob
+      parameters:
+      - name: jobId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        "200": {}
+  /jobs/{jobId}/resume:
+    post:
+      summary: Resume a specific converter job
+      description: Resume a specific converter job
+      operationId: resumeJob
+      parameters:
+      - name: jobId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        "200": {}
+  /jobs/{jobId}/stop:
+    post:
+      summary: Stop a specific converter job
+      description: Stop a specific converter job
+      operationId: stopJob
+      parameters:
+      - name: jobId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        "200": {}
+  /jobs/{jobId}/config:
+    get:
+      summary: Retrieve the effective job config for a specific job
+      description: Retrieve the effective job config for a specific job
+      operationId: getJobConfig
+      parameters:
+      - name: jobId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+  /jobs/{jobId}/dataset-meta:
+    get:
+      summary: "Retrieve the dataset metadata deduced for a specific job.\n \n This\
+        \ can be used as a baseline for manual publishing of dataset metadata."
+      description: "Retrieve the dataset metadata deduced for a specific job.\n \n\
+        \ This can be used as a baseline for manual publishing of dataset metadata."
+      operationId: getJobDatasetMeta
+      parameters:
+      - name: jobId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+  /jobs/{jobId}/execution-summary:
+    get:
+      summary: Retrieve the execution summary for a specific job
+      description: Retrieve the execution summary for a specific job
+      operationId: getJobExecutionSummary
+      parameters:
+      - name: jobId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+  /dataset-meta:
+    post:
+      summary: "Create, sign and and publish dataset metadata JSON along with the\
+        \ target dataset."
+      description: "Create, sign and and publish dataset metadata JSON along with\
+        \ the target dataset."
+      operationId: publishDatasetMeta
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                datasetMeta:
+                  $ref: '#/components/schemas/DatasetMetaController.DatasetMetaDto'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Object'
+components:
+  schemas:
+    ConverterJobController.StartConverterJobRequest:
+      type: object
+      properties:
+        jobConfig:
+          $ref: '#/components/schemas/ConverterJobConfig'
+    ConverterJobConfig:
+      type: object
+      properties:
+        prototype:
+          type: boolean
+        activeByDefault:
+          type: boolean
+        appConfig:
+          type: object
+          additionalProperties: true
+        jobId:
+          $ref: '#/components/schemas/ULID.Value'
+        jobName:
+          type: string
+        parent:
+          type: string
+        debug:
+          $ref: '#/components/schemas/ConverterJobConfig.Debug'
+        converterSettings:
+          $ref: '#/components/schemas/ConverterJobConfig.ConverterSettings'
+        rawdataSource:
+          $ref: '#/components/schemas/ConverterJobConfig.RawdataSourceRef'
+        targetStorage:
+          $ref: '#/components/schemas/ConverterJobConfig.TargetStorage'
+        targetDataset:
+          $ref: '#/components/schemas/ConverterJobConfig.TargetDataset'
+        pseudoRules:
+          type: array
+          items:
+            $ref: '#/components/schemas/PseudoFuncRule'
+    ULID.Value:
+      type: object
+      properties:
+        mostSignificantBits:
+          type: integer
+          format: int64
+        leastSignificantBits:
+          type: integer
+          format: int64
+    ConverterJobConfig.ConfigElement:
+      type: object
+    ConverterJobConfig.Debug:
+      allOf:
+      - $ref: '#/components/schemas/ConverterJobConfig.ConfigElement'
+      - type: object
+        properties:
+          dryrun:
+            type: boolean
+          developmentMode:
+            type: boolean
+          logFailedRawdata:
+            type: boolean
+          logSkippedRawdata:
+            type: boolean
+          logAllRawdata:
+            type: boolean
+          logAllConverted:
+            type: boolean
+          storeFailedRawdata:
+            type: boolean
+          storeSkippedRawdata:
+            type: boolean
+          storeAllRawdata:
+            type: boolean
+          storeAllConverted:
+            type: boolean
+          localStoragePath:
+            type: string
+          localStoragePassword:
+            type: string
+          includedRawdataEntries:
+            type: array
+            items:
+              type: string
+    ConverterJobConfig.ConverterSettings:
+      allOf:
+      - $ref: '#/components/schemas/ConverterJobConfig.ConfigElement'
+      - type: object
+        properties:
+          maxRecordsBeforeFlush:
+            type: integer
+            format: int64
+          maxSecondsBeforeFlush:
+            type: integer
+            format: int64
+          maxRecordsTotal:
+            type: integer
+            format: int64
+          rawdataSamples:
+            type: integer
+            format: int32
+          skippedMessages:
+            type: array
+            items:
+              type: string
+    ConverterJobConfig.RawdataSourceRef:
+      allOf:
+      - $ref: '#/components/schemas/ConverterJobConfig.ConfigElement'
+      - type: object
+        properties:
+          name:
+            type: string
+          topic:
+            type: string
+          initialPosition:
+            type: string
+    ConverterJobConfig.TargetStorage:
+      allOf:
+      - $ref: '#/components/schemas/ConverterJobConfig.ConfigElement'
+      - type: object
+        properties:
+          root:
+            type: string
+          path:
+            type: string
+          version:
+            type: string
+          saKeyFile:
+            type: string
+    ConverterJobConfig.TargetDataset:
+      allOf:
+      - $ref: '#/components/schemas/ConverterJobConfig.ConfigElement'
+      - type: object
+        properties:
+          valuation:
+            $ref: '#/components/schemas/Valuation'
+          type:
+            $ref: '#/components/schemas/DatasetType'
+          publishMetadata:
+            type: boolean
+    Valuation:
+      type: string
+      enum:
+      - SENSITIVE
+      - SHIELDED
+      - INTERNAL
+      - OPEN
+      - UNRECOGNIZED
+    DatasetType:
+      type: string
+      enum:
+      - BOUNDED
+      - UNBOUNDED
+      - UNRECOGNIZED
+    PseudoFuncRule:
+      type: object
+      properties:
+        name:
+          type: string
+        pattern:
+          type: string
+        func:
+          type: string
+    Object:
+      type: object
+    DatasetMetaController.DatasetMetaDto:
+      type: object
+      properties:
+        storageRoot:
+          type: string
+        storagePath:
+          type: string
+        storageVersion:
+          type: string
+        valuation:
+          $ref: '#/components/schemas/Valuation'
+        type:
+          $ref: '#/components/schemas/DatasetType'
+        pseudoRules:
+          type: array
+          items:
+            $ref: '#/components/schemas/PseudoFuncRule'
