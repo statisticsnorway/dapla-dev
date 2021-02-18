@@ -1,4 +1,9 @@
 openapi: 3.0.1
+
+servers:
+- url: http://localhost:30900
+  description: Port forward to rawdata-converter
+
 paths:
   /jobs:
     post:
@@ -159,8 +164,7 @@ paths:
                 type: string
   /jobs/{jobId}/dataset-meta:
     get:
-      summary: "Retrieve the dataset metadata deduced for a specific job.\n \n This\
-        \ can be used as a baseline for manual publishing of dataset metadata."
+      summary: Retrieve the dataset metadata deduced for a specific job.
       description: "Retrieve the dataset metadata deduced for a specific job.\n \n\
         \ This can be used as a baseline for manual publishing of dataset metadata."
       operationId: getJobDatasetMeta
