@@ -32,6 +32,12 @@ If you're on a Mac, you can conveniently run `make install-mac` to install necce
 npm install
 ```
 
+### Installation on Linux
+DO NOT INSTALL Hugo from snap.
+1. Download Hugo, `wget https://github.com/gohugoio/hugo/releases/download/v0.81.0/hugo_0.81.0_Linux-64bit.tar.gz`, and unpack to a folder on the path
+2. Install AsciiDoctor: `sudo apt install asciidoctor`
+3. Install AsciiDoctor extensions: `sudo gem install asciidoctor-diagram` && `sudo gem install ascidoctor-html5s
+
 ## Running a container locally
 
 You can run the dapla-dev portal inside a [Docker](ihttps://docs.docker.com/) container, the container runs with a volume bound to the `dapla-dev` folder. This approach doesn't require you to install any dependencies other than Docker.
