@@ -6,6 +6,8 @@ draft: false
 weight: 30
 ---
 
+## application.yml
+
 Rawdata converter apps read config from an `application.yml` file. The following sections must be provided:
 
 | Prefix                             | Description  
@@ -19,10 +21,6 @@ Rawdata converter apps read config from an `application.yml` file. The following
 An example says more than a 1000 words:
 
 ```yaml
-        micronaut:
-          application.name: rawdata-converter-app-blah
-          server.port: 8080
-
         services:
           dapla-oauth:
             host: https://keycloak.staging-bip-app.ssb.no
@@ -55,10 +53,7 @@ An example says more than a 1000 words:
                 listing.min-interval-seconds: 15
 
           localfoo:
-              encryption:
-              key: dummyencryptionkey
-              salt: dummyencryptionsalt
-              rawdata-client:
+            rawdata-client:
               provider: filesystem
               local-temp-folder: temp
               avro-file:
@@ -100,6 +95,8 @@ An example says more than a 1000 words:
               prototype: true
               rawdata-source:
                 name: foo
+                encryption-key-id: rawdata-encryption-credentials-foo-key
+                encryption-salt-id: rawdata-encryption-credentials-foo-salt
               target-dataset:
                 valuation: INTERNAL
                 type: BOUNDED
@@ -116,6 +113,30 @@ An example says more than a 1000 words:
                   func: fpe-anychar(secret1)                
 ```
 
+
+## bootstrap.yml
+
+In order to enable GCP Secret Manager functionality, you have to configure some pre-startup configuration in `bootstrap.yml` as well:
+
+| Prefix                             | Description  
+|:---------------------------------- |:-------------
+| `micronaut`                         | properties common for all [Micronaut applications](https://docs.micronaut.io/latest/guide/index.html#config). Note the `config-client.enabled` property. This must be set to `true` in order to enable [Micronaut GCP Secret Manager](https://micronaut-projects.github.io/micronaut-gcp/latest/guide/#distributedConfiguration) support.
+| `gcp`                         | Micronaut GCP configuration. Note the `gcp.secret-manager` property that holds a list of Secret Manager properties to preload upon application startup. It is important that you list all pseudo secrets that the rawdata converter uses here.
+
+Example:
+
+```yaml
+        micronaut:
+          application.name: rawdata-converter-app-blah
+          server.port: 8080
+          config-client.enabled: true
+        gcp:
+          project-id: ssb-team-dapla
+          secret-manager:
+            keys:
+              - PSEUDO_SECRETS_FOOSECRET1_CONTENT
+```
+
 ## Rawdata Converter Job Config
 
 Rawdata converter job config properties are grouped into logical sections. 
@@ -126,13 +147,13 @@ Config can be expressed either as `yaml` (via `application.yml`) or `json` (e.g.
 
 ```
 .
-├── converter-settings
-├── rawdata-source
-├── target-storage
-├── target-dataset
+├── converterSettings
+├── rawdataSource
+├── targetStorage
+├── targetDataset
 ├── debug
-├── pseudo-rules
-├── app-config
+├── pseudoRules
+├── appConfig
 ```
 
 ### `root` (no group)
@@ -166,6 +187,20 @@ Rawdata source properties
 | `name` | References a named entry in the `rawdata.sources` config section of the application config
 | `topic` | Name of the rawdata stream written by the data collector. If the rawdata client provider is either `GCS` or `filesystem`, the `topic` will be the same as the name of the directory that holds the avro files that contains rawdata.
 | `initialPosition` | The position of the rawdata stream that the rawdata converter should start reading from. One of: <ul><li>`LAST` - after the last known (converted) position, meaning that the rawdata converter will determine the last known position from the target dataset. If the target dataset is not readable, then the converter will start from the beginning of the stream</li><li>`FIRST` - always from the beginning of the stream. Note that this might result in duplicates if the dataset already exists.</li><li>a specific ULID</li></ul> | `LAST`
+| `encryptionKeyId` | Name of the Secret Manager secret that holds the encryption key for this rawdata source. Will not be used if an `encryptionKey` is already configured. |
+| `encryptionKey` | An encryption key. Can be specified if you for some reason want to avoid secret manager lookup of `encryptionKeyId` (e.g. if the encryption key is injected into the app environment) |
+| `encryptionSaltId` | Name of the Secret Manager secret that holds the encryption salt for this rawdata source. Will not be used if an `encryptionSalt` is already configured. |
+| `encryptionSalt` | An encryption salt. Can be specified if you for some reason want to avoid secret manager lookup of `encryptionSaltId` (e.g. if the encryption salt is injected into the app environment) |
+
+
+#### Some notes about rawdata source encryption configuration
+
+In a production setting it is expected that you configure rawdata encryption via Secret Manager manageed secrets. That is: you would only define `encryptionKeyId` and `encryptionSaltId`.
+
+It does not make sense to define both `encryptionKeyId` and `encryptionKey` (or both `encryptionSaltId` and `encryptionSalt`).
+
+If neither `encryptionKeyId` or `encryptionKey` is configured, the converter will attempt to
+treat the rawdata source as unencrypted data.
 
 ### `target-storage` 
 
@@ -217,7 +252,7 @@ Each pseudo rule is described by three properties:
 | Property  | Description 
 |:--------- |:-------------
 | `name`    | Descriptive name of the rule - optional, but recommended for debug and reporting purposes 
-| `pattern` | [Glob pattern](https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob) that when matched will trigger the rule
+| `pattern` | [Glob pattern](https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob) matching *target field names* that when matched will trigger the rule
 | `func`    | Reference to a pseudonymization function (including arguments such as pseudo secrets, etc) that should be applied when the rule is triggered 
 
 **Example:**
@@ -239,9 +274,14 @@ Each pseudo rule is described by three properties:
 
 The above will apply the `fpe-fnr` function on all properties with a "document path" that ends with `folkeregisteridentifikator` or `foedselsEllerDNummer`. The `fpe-fnr` takes one argument (the pseudonymization secret named `secret1`).
 
+{{% alert title="Gotcha" color="warning" %}}
+Note that the pattern matches the names of *Target* fields (avro schema). This is not necessarily the same as the source field names of a data source. E.g. if converting a CSV source, the column names might be different in the resulting avro file due to avro field name restrictions.
+{{% /alert %}}
+
+
 
 ### app-config
 
-Implementation specific configuration for the converter app. Can be nested and grouped in many levels. Will be treated as a genric Map and deserialized by the app specific [RawdataConverterFactory](https://github.com/statisticsnorway/rawdata-converter-coredux/blob/master/src/main/java/no/ssb/rawdata/converter/core/convert/RawdataConverterFactory.java).
+Implementation specific configuration for the converter app. Can be nested and grouped in many levels. Will be treated as a generic Map and deserialized by the app specific [RawdataConverterFactory](https://github.com/statisticsnorway/rawdata-converter-coredux/blob/master/src/main/java/no/ssb/rawdata/converter/core/convert/RawdataConverterFactory.java).
 
 Could hold stuff like schema names, versions, etc...
