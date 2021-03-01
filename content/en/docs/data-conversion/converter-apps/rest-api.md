@@ -26,7 +26,7 @@ With `kubectl`, you can configure a port forward "tunnel" to a rawdata-converter
 First, retrieve the name of a pod:
 
 ```shell
-$ kc get pods | grep rawdata-converter
+$ kubectl get pods | grep rawdata-converter
 
 rawdata-converter-foo-6c4d9695c6-x68tn
 rawdata-converter-bar-575898498c-9msfh
