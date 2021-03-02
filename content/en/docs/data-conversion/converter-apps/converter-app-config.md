@@ -367,7 +367,7 @@ Building on the `application.yml` example above, we have the following protoype 
                 type: gcs
                 root: gs://ssb-data-staging-kilde-bar
 
-            somebarjob:
+            some-bar-job:
               parent: barbase
               rawdata-source:
                 topic: some_bartopic
@@ -385,13 +385,13 @@ The above config will create the following inheritance chain:
 classDiagram
 base <|-- foobase : parent
 base <|-- barbase : parent
-barbase <|-- somebarjob : parent
+barbase <|-- some-bar-job : parent
 base : prototype
 foobase : prototype
 barbase : prototype
 ```
 
-Notice that in this example we only define one _executable_ job: `somebarjob`. The other ones are _prototype_ jobs. The non-prototype job, when configured like this, will be started whenever the rawdata
+Notice that in this example we only define one _executable_ job: `some-bar-job`. The other ones are _prototype_ jobs. The non-prototype job, when configured like this, will be started whenever the rawdata
 converter application starts, meaning that it will "survive" a reboot of the application.
 
 ### Example of REST API initiated converter job
