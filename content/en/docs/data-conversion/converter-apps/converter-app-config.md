@@ -215,7 +215,7 @@ Properties related to where the converted dataset is stored
 | `version` | A unique string used to denote the version of the dataset. For all practical cases this should be a timestamp (milliseconds since the Unix epoch)
 | `saKeyFile` | Path to a GCS service account keyfile that grants write access to the target dataset. You will only need to specify this property if the target dataset is located in GCS AND you explicitly want to use a service account keyfile instead of compute engine credentials. If the "rawdata client provider" is `GCS` and this property is `null`, then it is assumed that compute engine credentials should be used.
 
-### `target-dataset`
+### `targetDataset`
 
 Properties related to metadata about the converted dataset
 
