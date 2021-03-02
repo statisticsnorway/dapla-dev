@@ -292,14 +292,14 @@ Could hold stuff like schema names, versions, etc...
 ## Job Config Inheritance
 
 As documented above, a complete (aka "effective") rawdata converter job configuration accepts many different configuration parameters. Many of these will have the same values for different jobs.
-You might e.g. want to multiple converter jobs for a multitude of rawdata source topics and the only difference between these jobs would be _where_ to read from and _where_ to write converted data.
+You might e.g. want to start multiple converter jobs for a bunch of different rawdata source topics and the only difference between these jobs would be _where_ to read from and _where_ to write converted data to.
 
 In order to reduce the need to repeat all config params for each job, the rawdata converter supports
-basic job configuration inheritance. A job might point at another job using the `parent` keyword. In addition, you might have cases where you want to define job configs that simply exist for other
+basic job configuration inheritance. A job might point at another job using the `parent` keyword. In such a setting, you might have cases where you want to define job configs that simply exist for other
 jobs to inherit from. These configs should be marked as `prototype` jobs.
 
-There can be an arbitrary number of jobs in such a conver job inheritance chain. Jobs config that does not
-point at another parent job, will inherit from the special default job (the "granda"), which will supply the job with reasonable defaults for parameters for whitch such defaults can be assumed.
+There can be an arbitrary number of jobs in a converter job inheritance chain. Job configs that don't
+point at another parent job will inherit from the special _default_ job (the "grandma"), which will supply the job with reasonable defaults for parameters for which such defaults can be assumed.
 
 The last config in the chain that defines a property, will override any parent's definition of the same property. In cases where you have lists, such as "pseudoConfigs", these will not be overwritten, but instead
 appended to. Thus: You can define "global" pseudo configs in a parent config, and append to these rules by
