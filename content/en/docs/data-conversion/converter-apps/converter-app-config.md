@@ -21,6 +21,9 @@ Rawdata converter apps read config from an `application.yml` file. The following
 An example says more than a 1000 words:
 
 ```yaml
+        micronaut:
+          server.port: 8080
+
         services:
           dapla-oauth:
             host: https://keycloak.staging-bip-app.ssb.no
@@ -128,7 +131,6 @@ Example:
 ```yaml
         micronaut:
           application.name: rawdata-converter-app-blah
-          server.port: 8080
           config-client.enabled: true
         gcp:
           project-id: ssb-team-dapla
@@ -167,7 +169,7 @@ Overarching properties
 | `parent`        | Optionally pointing at another configuration that this job config will inherit properties from. If not specified the job config will inherit directly from the "default" job config (the grandma of all job configs). |
 | `activeByDefault`  | If `true`, this job will be started automatically when the job has gone through the initialization stage. For jobs specified in the application configuration, the job will be started immediately after the application is ready. | `true`
 
-### `converter-settings`
+### `converterSettings`
 
 General converter settings
 
@@ -178,7 +180,7 @@ General converter settings
 | `maxRecordsTotal`       | The max number of records to convert. The converter job will be stopped when reaching this count. | unlimited
 | `skippedMessages`       | Set of rawdata messages (denoted by ULID) that will explicitly be skipped from being converted. Note that using this should be considered a "hack" and thus only as "last resort" or if you can accept the accompanying technical debt. |
 
-### `rawdata-source`
+### `rawdataSource`
 
 Rawdata source properties
 
@@ -202,7 +204,7 @@ It does not make sense to define both `encryptionKeyId` and `encryptionKey` (or 
 If neither `encryptionKeyId` or `encryptionKey` is configured, the converter will attempt to
 treat the rawdata source as unencrypted data.
 
-### `target-storage` 
+### `targetStorage` 
 
 Properties related to where the converted dataset is stored
 
@@ -242,7 +244,7 @@ Runtime properties that supports the development and debugging process
 | `localStoragePath` | The root path of locally stored debug content. This must be specified if any of the `storeX` properties above are `true` | `false`
 | `localStoragePassword` | If specified, items will be added to a password protected archive. Can be used to add additional security to stored debug data such as failed rawdata messages. |
 
-### `pseudo-rules`
+### `pseudoRules`
 
 You can optionally specify an array of pseudonymization rules that should be applied to the converted dataset. Note that the order of the rules are important. The first matching rules will be used, ignoring any other rules that 
 [TODO: Reference pseudonymization documentation here]
@@ -280,8 +282,152 @@ Note that the pattern matches the names of *Target* fields (avro schema). This i
 
 
 
-### app-config
+### appConfig
 
 Implementation specific configuration for the converter app. Can be nested and grouped in many levels. Will be treated as a generic Map and deserialized by the app specific [RawdataConverterFactory](https://github.com/statisticsnorway/rawdata-converter-coredux/blob/master/src/main/java/no/ssb/rawdata/converter/core/convert/RawdataConverterFactory.java).
 
 Could hold stuff like schema names, versions, etc...
+
+
+## Job Config Inheritance
+
+As documented above, a complete (aka "effective") rawdata converter job configuration accepts many different configuration parameters. Many of these will have the same values for different jobs.
+You might e.g. want to multiple converter jobs for a multitude of rawdata source topics and the only difference between these jobs would be _where_ to read from and _where_ to write converted data.
+
+In order to reduce the need to repeat all config params for each job, the rawdata converter supports
+basic job configuration inheritance. A job might point at another job using the `parent` keyword. In addition, you might have cases where you want to define job configs that simply exist for other
+jobs to inherit from. These configs should be marked as `prototype` jobs.
+
+There can be an arbitrary number of jobs in such a conver job inheritance chain. Jobs config that does not
+point at another parent job, will inherit from the special default job (the "granda"), which will supply the job with reasonable defaults for parameters for whitch such defaults can be assumed.
+
+The last config in the chain that defines a property, will override any parent's definition of the same property. In cases where you have lists, such as "pseudoConfigs", these will not be overwritten, but instead
+appended to. Thus: You can define "global" pseudo configs in a parent config, and append to these rules by
+specifying additional rules in a child job config. 
+
+### Example
+
+Building on the `application.yml` example above, we have the following protoype configs:
+
+```yaml
+            base:
+              prototype: true
+              active-by-default: false
+              debug:
+                dryrun: false
+                development-mode: false
+                log-failed-rawdata: false
+                log-skipped-rawdata: false
+                log-all-rawdata: false
+                log-all-converted: false
+                store-failed-rawdata: true
+                store-skipped-rawdata: false
+                store-all-rawdata: false
+                store-all-converted: false
+                local-storage-path: ./tmp
+              converter-settings:
+                rawdata-samples: 1
+                max-records-before-flush: 1000000
+                max-seconds-before-flush: 300
+
+            foobase:
+              parent: base
+              prototype: true
+              rawdata-source:
+                name: foo
+                encryption-key-id: rawdata-encryption-credentials-foo-key
+                encryption-salt-id: rawdata-encryption-credentials-foo-salt
+              target-dataset:
+                valuation: INTERNAL
+                type: BOUNDED
+                publish-metadata: true
+              target-storage:
+                type: gcs
+                root: gs://ssb-data-staging-kilde-foo
+              pseudo-rules:
+                - name: fodselsnummer
+                  pattern: '**/{folkeregisteridentifikator,foedselsEllerDNummer}'
+                  func: fpe-fnr(secret1)
+                - name: navn
+                  pattern: '**/navn'
+                  func: fpe-anychar(secret1)
+
+            barbase:
+              parent: base
+              prototype: true
+              rawdata-source:
+                name: foo
+                encryption-key-id: rawdata-encryption-credentials-bar-key
+                encryption-salt-id: rawdata-encryption-credentials-bar-salt
+              target-dataset:
+                valuation: SENSITIVE
+                type: UNBOUNDED
+                publish-metadata: true
+              target-storage:
+                type: gcs
+                root: gs://ssb-data-staging-kilde-bar
+
+            somebarjob:
+              parent: barbase
+              rawdata-source:
+                topic: some_bartopic
+                initial-position: LAST
+              target-storage:
+                path: /kilde/bar/path/to/ds/202101041458
+                version: 1609769131000
+              app-config:
+                some-custom-app-param: blah     
+```
+
+The above config will create the following inheritance chain:
+
+```mermaid
+classDiagram
+base <|-- foobase : parent
+base <|-- barbase : parent
+barbase <|-- somebarjob : parent
+base : prototype
+foobase : prototype
+barbase : prototype
+```
+
+Notice that in this example we only define one _executable_ job: `somebarjob`. The other ones are _prototype_ jobs. The non-prototype job, when configured like this, will be started whenever the rawdata
+converter application starts, meaning that it will "survive" a reboot of the application.
+
+### Example of REST API initiated converter job
+
+You can also POST job configs via the [REST API]({{< ref "rest-api.md" >}}). An example of such a job config could be:
+```json
+{
+  "jobConfig": {
+    "parent": "foobase",
+    "rawdataSource": {
+      "topic": "some_foo_topic",
+      "initialPosition": "FIRST",
+      "encyptionKeyId": "some-other-encryption-key-id",
+      "encyptionSaltId": "some-other-encryption-salt-id"
+    },
+    "targetStorage": {
+      "path": "/kilde/foo/path/to/ds/202010202",
+      "version": 1613387549145
+    },
+    "pseudoRules": [
+      {
+        "name": "someprop1",
+        "pattern": "**/someprop1",
+        "func": "fpe-anychar(foosecret1)"
+      },
+      {
+        "name": "someprop2",
+        "pattern": "**/someprop2",
+        "func": "fpe-digits(foosecret1)"
+      },
+      {
+        "name": "fodselsnr",
+        "pattern": "**/{fnr*,*foedesel*}",
+        "func": "fpe-fnr(foosecret1)"
+      }
+    ]
+  }
+}
+```
