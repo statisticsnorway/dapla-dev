@@ -403,7 +403,7 @@ You can also POST job configs via the [REST API]({{< ref "rest-api.md" >}}). An 
     "parent": "foobase",
     "rawdataSource": {
       "topic": "some_foo_topic",
-      "initialPosition": "FIRST",
+      "initialPosition": "LAST",
       "encyptionKeyId": "some-other-encryption-key-id",
       "encyptionSaltId": "some-other-encryption-salt-id"
     },
