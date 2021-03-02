@@ -367,7 +367,7 @@ Building on the `application.yml` example above, we have the following protoype 
                 type: gcs
                 root: gs://ssb-data-staging-kilde-bar
 
-            some-bar-job:
+            some_bar_job:
               parent: barbase
               rawdata-source:
                 topic: some_bartopic
@@ -385,7 +385,7 @@ The above config will create the following inheritance chain:
 classDiagram
 base <|-- foobase : parent
 base <|-- barbase : parent
-barbase <|-- some-bar-job : parent
+barbase <|-- some_bar_job : parent
 base : prototype
 foobase : prototype
 barbase : prototype
