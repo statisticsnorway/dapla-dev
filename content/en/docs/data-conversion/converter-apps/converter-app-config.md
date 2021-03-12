@@ -29,6 +29,8 @@ An example says more than a 1000 words:
             host: https://keycloak.staging-bip-app.ssb.no
             token-endpoint-path: /auth/realms/ssb/protocol/openid-connect/token
             token-provider: keycloak
+            client-id-key: rawdataconverter-keycloak-clientid
+            client-secret-key: rawdataconverter-keycloak-clientsecret
           dapla-data-access:
             impl: HTTP
             host: http://data-access.dapla.svc.cluster.local
@@ -39,6 +41,15 @@ An example says more than a 1000 words:
             port: 80
             project-id: staging-bip
             topic: metadata-distributor-dataset-updates
+          secrets:
+            impl: GCP
+            overrides:
+              some-hardcoded-secret: blah
+
+        pseudo.secrets:
+          testsecret1:
+            id: pseudo-secret-testsecret1
+            type: AES256
 
         rawdata.sources:
           foo:
@@ -99,7 +110,8 @@ An example says more than a 1000 words:
               rawdata-source:
                 name: foo
                 encryption-key-id: rawdata-encryption-credentials-foo-key
-                encryption-salt-id: rawdata-encryption-credentials-foo-salt
+                encryption-key-version: 1
+                encryption-salt-id: somesalt
               target-dataset:
                 valuation: INTERNAL
                 type: BOUNDED
@@ -110,10 +122,10 @@ An example says more than a 1000 words:
               pseudo-rules:
                 - name: fodselsnummer
                   pattern: '**/{folkeregisteridentifikator,foedselsEllerDNummer}'
-                  func: fpe-fnr(secret1)
+                  func: fpe-fnr(testsecret1)
                 - name: navn
                   pattern: '**/navn'
-                  func: fpe-anychar(secret1)                
+                  func: fpe-anychar(testsecret1)                
 ```
 
 
@@ -130,14 +142,15 @@ Example:
 
 ```yaml
         micronaut:
-          application.name: rawdata-converter-app-blah
-          config-client.enabled: true
+          application:
+            name: rawdata-converter-app-blah
+          config-client:
+            enabled: true
         gcp:
           project-id: ssb-team-dapla
-          secret-manager:
-            keys:
-              - PSEUDO_SECRETS_FOOSECRET1_CONTENT
 ```
+
+The above config assumes that you want to use GCP credentials from the environment. This is the default for applications deployed to our environments that leans on workload identity. In a devlopment environment you will likely want to configure the credentials explicitly (using a Service Account key).
 
 ## Rawdata Converter Job Config
 
@@ -190,19 +203,18 @@ Rawdata source properties
 | `topic` | Name of the rawdata stream written by the data collector. If the rawdata client provider is either `GCS` or `filesystem`, the `topic` will be the same as the name of the directory that holds the avro files that contains rawdata.
 | `initialPosition` | The position of the rawdata stream that the rawdata converter should start reading from. One of: <ul><li>`LAST` - after the last known (converted) position, meaning that the rawdata converter will determine the last known position from the target dataset. If the target dataset is not readable, then the converter will start from the beginning of the stream</li><li>`FIRST` - always from the beginning of the stream. Note that this might result in duplicates if the dataset already exists.</li><li>a specific ULID</li></ul> | `LAST`
 | `encryptionKeyId` | Name of the Secret Manager secret that holds the encryption key for this rawdata source. Will not be used if an `encryptionKey` is already configured. |
+| `encryptionKeyVersion` | Optional - version of encryption key id to retrieve from Secret Manager. | `latest`
 | `encryptionKey` | An encryption key. Can be specified if you for some reason want to avoid secret manager lookup of `encryptionKeyId` (e.g. if the encryption key is injected into the app environment) |
-| `encryptionSaltId` | Name of the Secret Manager secret that holds the encryption salt for this rawdata source. Will not be used if an `encryptionSalt` is already configured. |
-| `encryptionSalt` | An encryption salt. Can be specified if you for some reason want to avoid secret manager lookup of `encryptionSaltId` (e.g. if the encryption salt is injected into the app environment) |
+| `encryptionSalt` | An encryption salt |
 
 
 #### Some notes about rawdata source encryption configuration
 
-In a production setting it is expected that you configure rawdata encryption via Secret Manager manageed secrets. That is: you would only define `encryptionKeyId` and `encryptionSaltId`.
+In a production setting it is expected that you configure rawdata encryption via Secret Manager manageed secrets. That is: you would only define `encryptionKeyId`.
 
-It does not make sense to define both `encryptionKeyId` and `encryptionKey` (or both `encryptionSaltId` and `encryptionSalt`).
+It does not make sense to define both `encryptionKeyId` and `encryptionKey`.
 
-If neither `encryptionKeyId` or `encryptionKey` is configured, the converter will attempt to
-treat the rawdata source as unencrypted data.
+If neither `encryptionKeyId` or `encryptionKey` is configured, the converter will attempt to treat the rawdata source as unencrypted data.
 
 ### `targetStorage` 
 
@@ -336,7 +348,7 @@ Building on the `application.yml` example above, we have the following protoype 
               rawdata-source:
                 name: foo
                 encryption-key-id: rawdata-encryption-credentials-foo-key
-                encryption-salt-id: rawdata-encryption-credentials-foo-salt
+                encryption-salt: somesalt
               target-dataset:
                 valuation: INTERNAL
                 type: BOUNDED
@@ -347,10 +359,10 @@ Building on the `application.yml` example above, we have the following protoype 
               pseudo-rules:
                 - name: fodselsnummer
                   pattern: '**/{folkeregisteridentifikator,foedselsEllerDNummer}'
-                  func: fpe-fnr(secret1)
+                  func: fpe-fnr(testsecret1)
                 - name: navn
                   pattern: '**/navn'
-                  func: fpe-anychar(secret1)
+                  func: fpe-anychar(testsecret1)
 
             barbase:
               parent: base
@@ -358,7 +370,8 @@ Building on the `application.yml` example above, we have the following protoype 
               rawdata-source:
                 name: foo
                 encryption-key-id: rawdata-encryption-credentials-bar-key
-                encryption-salt-id: rawdata-encryption-credentials-bar-salt
+                encryption-key-version: 1
+                encryption-salt: anothersalt
               target-dataset:
                 valuation: SENSITIVE
                 type: UNBOUNDED
