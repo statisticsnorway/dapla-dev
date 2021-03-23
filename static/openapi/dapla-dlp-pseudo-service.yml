@@ -1,0 +1,193 @@
+openapi: 3.0.1
+servers:
+- url: http://localhost:30950
+  description: Locally proxied pseudo service
+security:
+- BearerAuth: []
+paths:
+  /depseudonymize/file:
+    post:
+      operationId: depseudonymizeFile
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  format: binary
+                request:
+                  $ref: '#/components/schemas/PseudoController.PseudoRequest'
+        required: true
+      responses:
+        "200":
+          description: depseudonymizeFile 200 response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Object'
+            application/octet-stream:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Object'
+            text/csv:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Object'
+  /export:
+    post:
+      operationId: export
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportController.ExportRequest'
+        required: true
+      responses:
+        "200":
+          description: export 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportService.DatasetExportResult'
+  /pseudonymize/file:
+    post:
+      operationId: pseudonymizeFile
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  format: binary
+                request:
+                  $ref: '#/components/schemas/PseudoController.PseudoRequest'
+        required: true
+      responses:
+        "200":
+          description: pseudonymizeFile 200 response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Object'
+            application/zip:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Object'
+            text/csv:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Object'
+components:
+  schemas:
+    ExportController.DatasetIdentifier:
+      type: object
+      properties:
+        parentUri:
+          type: string
+          format: uri
+        path:
+          type: string
+        version:
+          type: string
+    ExportController.ExportRequest:
+      required:
+      - datasetIdentifier
+      - target
+      type: object
+      properties:
+        columnSelectors:
+          type: array
+          items:
+            type: string
+        datasetIdentifier:
+          $ref: '#/components/schemas/ExportController.DatasetIdentifier'
+        pseudoConfig:
+          $ref: '#/components/schemas/PseudoConfig'
+        target:
+          $ref: '#/components/schemas/ExportController.ExportTarget'
+    ExportController.ExportTarget:
+      required:
+      - contentName
+      - contentType
+      - password
+      type: object
+      properties:
+        contentName:
+          type: string
+        contentType:
+          type: string
+          enum:
+          - application/json
+          - text/csv
+        password:
+          minimum: 9
+          minLength: 1
+          type: string
+        path:
+          type: string
+    ExportService.DatasetExportResult:
+      type: object
+      properties:
+        targetUri:
+          type: string
+    Object:
+      type: object
+    PseudoConfig:
+      type: object
+      properties:
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/PseudoFuncRule'
+    PseudoController.PseudoRequest:
+      type: object
+      properties:
+        compression:
+          $ref: '#/components/schemas/PseudoController.TargetCompression'
+        pseudoConfig:
+          $ref: '#/components/schemas/PseudoConfig'
+        targetContentType:
+          type: string
+          enum:
+          - application/json
+          - text/csv
+        targetUri:
+          type: string
+    PseudoController.TargetCompression:
+      required:
+      - password
+      type: object
+      properties:
+        password:
+          minimum: 9
+          minLength: 1
+          type: string
+    PseudoFuncRule:
+      type: object
+      properties:
+        func:
+          type: string
+        name:
+          type: string
+        pattern:
+          type: string
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: jwt
