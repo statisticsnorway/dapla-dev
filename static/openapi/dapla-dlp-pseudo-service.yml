@@ -97,16 +97,13 @@ components:
     ExportController.DatasetIdentifier:
       type: object
       properties:
-        parentUri:
-          type: string
-          format: uri
         path:
           type: string
-        version:
+        timestamp:
           type: string
     ExportController.ExportRequest:
       required:
-      - datasetIdentifier
+      - sourceDataset
       - target
       type: object
       properties:
@@ -114,10 +111,12 @@ components:
           type: array
           items:
             type: string
-        datasetIdentifier:
-          $ref: '#/components/schemas/ExportController.DatasetIdentifier'
+        depseudonymize:
+          type: boolean
         pseudoConfig:
           $ref: '#/components/schemas/PseudoConfig'
+        sourceDataset:
+          $ref: '#/components/schemas/ExportController.DatasetIdentifier'
         target:
           $ref: '#/components/schemas/ExportController.ExportTarget'
     ExportController.ExportTarget:
