@@ -94,50 +94,36 @@ paths:
                   $ref: '#/components/schemas/Object'
 components:
   schemas:
-    ExportController.DatasetIdentifier:
-      type: object
-      properties:
-        path:
-          type: string
-        timestamp:
-          type: string
     ExportController.ExportRequest:
       required:
-      - sourceDataset
-      - target
+      - datasetPath
+      - targetPassword
       type: object
       properties:
         columnSelectors:
           type: array
           items:
             type: string
+        datasetPath:
+          type: string
         depseudonymize:
           type: boolean
-        pseudoConfig:
-          $ref: '#/components/schemas/PseudoConfig'
-        sourceDataset:
-          $ref: '#/components/schemas/ExportController.DatasetIdentifier'
-        target:
-          $ref: '#/components/schemas/ExportController.ExportTarget'
-    ExportController.ExportTarget:
-      required:
-      - contentName
-      - contentType
-      - password
-      type: object
-      properties:
-        contentName:
+        pseudoRules:
+          type: array
+          items:
+            $ref: '#/components/schemas/PseudoFuncRule'
+        pseudoRulesDatasetPath:
           type: string
-        contentType:
+        targetContentName:
+          type: string
+        targetContentType:
           type: string
           enum:
           - application/json
           - text/csv
-        password:
+        targetPassword:
           minimum: 9
           minLength: 1
-          type: string
-        path:
           type: string
     ExportService.DatasetExportResult:
       type: object
