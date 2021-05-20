@@ -192,6 +192,7 @@ General converter settings
 | `maxSecondsBeforeFlush` | The max number of seconds before writing results to parquet. | 300 (5 minutes)
 | `maxRecordsTotal`       | The max number of records to convert. The converter job will be stopped when reaching this count. | unlimited
 | `skippedMessages`       | Set of rawdata messages (denoted by ULID) that will explicitly be skipped from being converted. Note that using this should be considered a "hack" and thus only as "last resort" or if you can accept the accompanying technical debt. |
+| `skipRawdataOnErrors`       | <p>If true, the converter will skip records that for any reason fail to be converted.</p><p>This option can be handy e.g. if the rawdata record does not meet expected requirements, such as it being improperly encoded or invalidly formatted. Without this flag turned on, the converter will halt when encountering such rawdata records.</p> <p>Enable this only if it is acceptable to lose data during the conversion process.</p> | `false`
 
 ### `rawdataSource`
 
